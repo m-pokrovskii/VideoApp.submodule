@@ -117,6 +117,7 @@ var appnextAPP = (function(){
 					title           = qs('.title', i),
 					description     = qs('.description', i),
 					video           = qs('#video-player', i),
+					sprite          = qs('.sprite-animation__video', i),
 					image           = qs('.small-image > img', i),
 					skipBlock       = qs('.skip-block', i),
 					skipLink        = qs('.skip-link', i),
@@ -137,9 +138,9 @@ var appnextAPP = (function(){
 						starsHoverImage   = qs('.stars__hover img', i),
 						defaultStarsImage = qs('.stars__default img', i),
 						starsRating       = Math.round((Math.random() * (5 - 3.5) + 3.5)*2)/2;
-						console.log(starsRating);
-				starRating(starsHover, starsHoverImage, defaultStarsImage, starsRating);
-				window.addEventListener('resize', function(event){
+	
+					starRating(starsHover, starsHoverImage, defaultStarsImage, starsRating);
+					window.addEventListener('resize', function(event){
 				  starRating(starsHover, starsHoverImage, defaultStarsImage, starsRating);
 				});
 			};
@@ -147,6 +148,22 @@ var appnextAPP = (function(){
 
 			if (downloadNumbers) {
 				downloadNumbers.innerHTML = randomNumber(10000, 2000000).toLocaleString();
+			};
+
+			if (sprite) {
+				var frameHeight = qs('.sprite-animation__placeholder', i).height,
+						frameStep    = 0,
+						spriteHeight = sprite.height;
+				
+			var animateFun = setInterval(function() {
+					console.log(frameStep);
+					if (frameStep >= spriteHeight-frameHeight) {
+						clearInterval(animateFun);
+						return;
+					};
+					frameStep = frameStep + frameHeight;
+					sprite.style.top = '-'+frameStep+'px';
+				}, 60)
 			};
 
 			if (video) {
