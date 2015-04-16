@@ -151,15 +151,17 @@ var appnextAPP = (function(){
 			};
 
 			if (sprite) {
-				var frameHeight = qs('.sprite-animation__placeholder', i).height,
+				var frameHeight  = qs('.sprite-animation__placeholder', i).height,
 						frameStep    = 0,
-						spriteHeight = sprite.height;
-				
+						spriteHeight = sprite.height,
+						resetSprite  = function() {
+							frameStep        = 0;
+							sprite.style.top = 0;
+						};
+
 			var animateFun = setInterval(function() {
-					console.log(frameStep);
-					if (frameStep >= spriteHeight-frameHeight) {
-						clearInterval(animateFun);
-						return;
+					if (frameStep >= spriteHeight) {
+						resetSprite();
 					};
 					frameStep = frameStep + frameHeight;
 					sprite.style.top = '-'+frameStep+'px';
