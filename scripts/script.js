@@ -153,19 +153,20 @@ var appnextAPP = (function(){
 			if (sprite) {
 				var frameHeight  = qs('.sprite-animation__placeholder', i).height,
 						frameStep    = 0,
-						spriteHeight = sprite.height,
+						spriteHeight = sprite.offsetHeight,
 						resetSprite  = function() {
 							frameStep        = 0;
 							sprite.style.top = 0;
 						};
-
-			var animateFun = setInterval(function() {
-					if (frameStep >= spriteHeight) {
-						resetSprite();
-					};
-					frameStep = frameStep + frameHeight;
-					sprite.style.top = '-'+frameStep+'px';
-				}, 60)
+						console.log(spriteHeight);
+				var animateFun = setInterval(function() {
+						if (frameStep >= spriteHeight) {
+							resetSprite();
+						};
+						frameStep = frameStep + frameHeight;
+						sprite.style.top = '-'+frameStep+'px';
+					}, 30);
+				window.animateFun = animateFun;
 			};
 
 			if (video) {
@@ -243,6 +244,10 @@ var appnextAPP = (function(){
 		});
 		document.body.appendChild(iframe);
 		return iframe;
+	}
+
+	function t () {
+		console.log('work');
 	}
 
 	function init() {
