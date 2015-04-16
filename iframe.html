@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+
+<html lang="ru">
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>App</title>
+
+	<!-- build:css styles/style.css -->
+	<link rel="stylesheet" href="styles/style.css">
+	<!-- endbuild -->
+</head>
+
+<body>
+	<div class="app">
+		<div class="header-block">
+			<div class="skip-block">
+				<span class="skip-block__text">Taking you to hte Play Store in <span class="skip-block__countdown countdown">10</span></span>
+				<a href="#" class="skip-block__link skip-link">Skip</a>
+			</div>			
+		</div>
+		<div class="video-block">
+			<div class="video">
+				<video id="video-player" muted></video>
+			</div>
+		</div>
+		<div class="content-block">
+			<div class="content-block__title title">Title</div>
+			<div class="content-block__rating">
+				<div class="rating__stars">
+					<div class="stars">
+						<div class="stars__default">
+							<img src="images/stars-default.png" alt="">
+						</div>
+						<div class="stars__hover">
+							<img src="images/stars-hover.png" alt="">
+						</div>
+					</div>
+				</div>
+				<div class="rating__downloads"><span class="rating-download-numbers">2,324,955</span> Downloads</div>
+			</div>
+		</div>
+		<div class="bottom-block">
+			<div class="bottom-block__button button"><a class="btn" href="#"><span>Download</span></a></div>
+		</div>
+		<div class="powered-by">
+			<a target="_top" class="_landscape" href="http://appnext.com"><img src="images/powered_by_landscape.png" alt=""></a>
+			<a target="_top" class="_portrait" href="http://appnext.com"><img src="images/powered_by.png" alt=""></a>
+		</div>
+	</div>
+</body>
+</html>
