@@ -99,7 +99,7 @@ var appnextAPP = (function(){
 	}
 
 	function numberWithCommas(x) {
-	    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+			return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 	}
 
 	function starRating (starsHover, starsHoverImage, defaultStarsImage, starsRating) {
@@ -107,6 +107,17 @@ var appnextAPP = (function(){
 		starsHover.style.width      = (starsRating/5)*100 + "%";
 	};
 
+	function calculateAspectRatioFit(srcWidth, srcHeight, availableWidth, availableHeight) {
+		for (var i = availableWidth; i>0; i--)
+		{
+			var y = srcHeight*i/srcWidth;
+			if ( y == parseInt(y))
+			{
+				return { width: i, height: y };
+				break;
+			}				
+	 }
+	}
 	function render (apps) {
 		app = getVideoApp(apps);
 		// console.log(Object.prototype.toString.call(apps));
@@ -141,8 +152,8 @@ var appnextAPP = (function(){
 	
 					starRating(starsHover, starsHoverImage, defaultStarsImage, starsRating);
 					window.addEventListener('resize', function(event){
-				  starRating(starsHover, starsHoverImage, defaultStarsImage, starsRating);
-				});
+						starRating(starsHover, starsHoverImage, defaultStarsImage, starsRating);
+					});
 			};
 
 
@@ -151,22 +162,37 @@ var appnextAPP = (function(){
 			};
 
 			if (sprite) {
-				var frameHeight  = qs('.sprite-animation__placeholder', i).height,
+				var spriteContainer = qs('#sprite-animation', i),
+						placeholder  = qs('.sprite-animation__placeholder', i),
 						frameStep    = 0,
-						spriteHeight = sprite.offsetHeight,
+						newSizes     = {},
+						spriteHeight = 0, 
 						resetSprite  = function() {
 							frameStep        = 0;
 							sprite.style.top = 0;
+						},
+						setupNewSizes = function() {
+							spriteContainer.style.width  = "auto";
+							spriteContainer.style.height = "auto";
+							resetSprite();
+							newSizes = calculateAspectRatioFit(placeholder.naturalWidth, placeholder.naturalHeight, placeholder.width, placeholder.height);
+							console.log(placeholder.width);
+							spriteContainer.style.width  = newSizes.width + "px";
+							spriteContainer.style.height = newSizes.height + "px";
+
+							spriteHeight = sprite.offsetHeight;							
 						};
-						console.log(frameHeight);
+				setupNewSizes();
+				window.addEventListener('resize', function(event){
+					setupNewSizes();
+				});
 				var animateFun = setInterval(function() {
 						if (frameStep >= spriteHeight) {
 							resetSprite();
 						};
-						frameStep = frameStep + frameHeight;
+						frameStep = frameStep + newSizes.height;						
 						sprite.style.top = '-'+frameStep+'px';
 					}, 60);
-				window.animateFun = animateFun;
 			};
 
 			if (video) {
@@ -244,10 +270,6 @@ var appnextAPP = (function(){
 		});
 		document.body.appendChild(iframe);
 		return iframe;
-	}
-
-	function t () {
-		console.log('work');
 	}
 
 	function init() {

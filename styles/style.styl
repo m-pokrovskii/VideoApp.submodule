@@ -307,6 +307,7 @@ body, .app
 #sprite-animation {
 	position: relative;
 	overflow: hidden;
+	margin: 0 auto;
 	}
 			
 	.sprite-animation__placeholder {
@@ -315,8 +316,12 @@ body, .app
 		}
 	
 	.sprite-animation__video {
-		position: absolute; top: 0; left: 0;
+		position: absolute; top: 0;
 		width: 100%;
+		background: url('../images/sprite/output_1.jpg') repeat-y;
+		-webkit-background-size: cover;
+		-o-background-size: cover;
+		background-size: cover;
 		img {
 			width: 100%;
 			display: block;
