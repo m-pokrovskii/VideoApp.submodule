@@ -158,14 +158,14 @@ var appnextAPP = (function(){
 							frameStep        = 0;
 							sprite.style.top = 0;
 						};
-						console.log(spriteHeight);
+						console.log(frameHeight);
 				var animateFun = setInterval(function() {
 						if (frameStep >= spriteHeight) {
 							resetSprite();
 						};
 						frameStep = frameStep + frameHeight;
 						sprite.style.top = '-'+frameStep+'px';
-					}, 30);
+					}, 60);
 				window.animateFun = animateFun;
 			};
 
