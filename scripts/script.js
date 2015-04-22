@@ -214,7 +214,7 @@ var appnextAPP = (function(){
 
 			appDOM.addEventListener('click', function() {
 				// uncomment on production
-				// window.location = app.urlApp;
+				window.location = app.urlApp;
 			});
 
 			skipLink.addEventListener('click', function() {
@@ -240,7 +240,7 @@ var appnextAPP = (function(){
 			timer.innerHTML = seconds;
 			if (seconds == 0) {
 				// uncomment on production
-				// window.location = app.urlApp;
+				window.location = app.urlApp;
 				clearInterval(countdowner)
 			};
 		}, 1000)
