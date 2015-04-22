@@ -118,6 +118,9 @@ var appnextAPP = (function(){
 			}				
 	 }
 	}
+
+
+
 	function render (apps) {
 		app = getVideoApp(apps);
 		// console.log(Object.prototype.toString.call(apps));
@@ -136,6 +139,10 @@ var appnextAPP = (function(){
 					stars           = qs('.stars', i),
 					appDOM          = qs('.app', i);
 
+			if (iframe) {
+				iframe.style.display = "block";
+			};
+
 			if (title) {
 				title.innerHTML = app.title;	
 			};
@@ -151,9 +158,6 @@ var appnextAPP = (function(){
 						starsRating       = Math.round((Math.random() * (5 - 3.5) + 3.5)*2)/2;
 	
 					starRating(starsHover, starsHoverImage, defaultStarsImage, starsRating);
-					window.addEventListener('resize', function(event){
-						starRating(starsHover, starsHoverImage, defaultStarsImage, starsRating);
-					});
 			};
 
 
@@ -162,37 +166,92 @@ var appnextAPP = (function(){
 			};
 
 			if (sprite) {
-				var spriteContainer = qs('#sprite-animation', i),
-						placeholder  = qs('.sprite-animation__placeholder', i),
-						frameStep    = 0,
-						newSizes     = {},
-						spriteHeight = 0, 
-						resetSprite  = function() {
-							frameStep        = 0;
-							sprite.style.top = 0;
-						},
+				var spriteContainer     = qs('#sprite-animation', i),
+						frameWidth          = 640,
+						frameHeight         = 360,
+						naturalSpriteHeight = 36000,
+						spriteHeight        = 0,
+						frameStep           = 0,
+						newSizes            = {},
+						arrImages           = [
+							'images/sprite/output_1.jpg',
+							'images/sprite/output_2.jpg',
+							'images/sprite/output_3.jpg',
+							'images/sprite/output_4.jpg',
+							'images/sprite/output_5.jpg',
+							],
+
 						setupNewSizes = function() {
 							spriteContainer.style.width  = "auto";
 							spriteContainer.style.height = "auto";
-							resetSprite();
-							newSizes = calculateAspectRatioFit(placeholder.naturalWidth, placeholder.naturalHeight, placeholder.width, placeholder.height);
-							console.log(placeholder.width);
+							animation.resetSprite();
+							newSizes = calculateAspectRatioFit(frameWidth, frameHeight, spriteContainer.offsetWidth, spriteContainer.offsetHeight);
 							spriteContainer.style.width  = newSizes.width + "px";
 							spriteContainer.style.height = newSizes.height + "px";
 
-							spriteHeight = sprite.offsetHeight;							
+							spriteHeight = naturalSpriteHeight*newSizes.height/frameHeight;	
 						};
+
+						var animation = {
+							resetSprite: function() {
+								frameStep        = 0;
+								sprite.style.top = 0;
+							},
+							runAnimation: function() {
+								var animateFun = setInterval(function() {
+										if (frameStep >= spriteHeight) {
+											animation.resetSprite();
+										};
+										frameStep = frameStep + newSizes.height;						
+										sprite.style.top = '-'+frameStep+'px';
+									}, 60);							
+							}
+						};
+
+					var seqImages = function (images, index, callback) {
+						console.log(images);
+						var index = index || 0;
+						var callback = callback || function() {};
+						var img = document.createElement('img');
+						img.src = images[index];
+						sprite.appendChild(img);
+						img.onload = function() {
+							if (index == 0) { callback() };
+							if (images.length-1 == index) { return };
+							index += 1;
+							seqImages(images, index);
+						};
+					};
+
+					var imageLoader = function (images, firstLoadCount) {
+						var restImages = images.splice(firstLoadCount, images.length);
+						var loadedImages = [],
+								count = 0;
+						firstLoadCount = firstLoadCount-1;
+						for (var i = 0; i <= firstLoadCount; i++) {
+							loadedImages[i] = document.createElement('img');
+							loadedImages[i].src = images[i];
+							loadedImages[i].style.display = "none";
+							sprite.appendChild(loadedImages[i]);
+							loadedImages[i].onload = function () {
+								count = count+1;
+								if (count >= images.length) {
+									loadedImages.forEach(function(element, index){
+										element.style.display = "block";
+									});
+									animation.runAnimation();
+									seqImages(restImages);
+								};
+							};
+						};
+					};
+
 				setupNewSizes();
+				imageLoader(arrImages, 2);
 				window.addEventListener('resize', function(event){
 					setupNewSizes();
+					starRating(starsHover, starsHoverImage, defaultStarsImage, starsRating);
 				});
-				var animateFun = setInterval(function() {
-						if (frameStep >= spriteHeight) {
-							resetSprite();
-						};
-						frameStep = frameStep + newSizes.height;						
-						sprite.style.top = '-'+frameStep+'px';
-					}, 60);
 			};
 
 			if (video) {
@@ -266,6 +325,7 @@ var appnextAPP = (function(){
 				borderStyle: 'none',
 				width:       '100%',
 				height:      '100%',
+				display:     'none',
 			}
 		});
 		document.body.appendChild(iframe);
