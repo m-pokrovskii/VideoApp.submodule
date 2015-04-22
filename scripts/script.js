@@ -1,8 +1,7 @@
 'use strict';
 var appnextAPP = (function(){	
 
-	var q = parseURL(),
-			app;
+	var app;
 
 	var Viewport = function() {
 		var vp;
@@ -56,22 +55,6 @@ var appnextAPP = (function(){
 		render(data.apps);
 	}
 
-	function parseURL (url) {
-		var query = {};
-		var scriptTag = qs('#videoAppScript');
-
-		return query = {
-			id:                scriptTag.getAttribute('data-id') || "",
-			cnt:               scriptTag.getAttribute('data-count') || "20",
-			cat:               scriptTag.getAttribute('data-category') || "",
-			pbk:               scriptTag.getAttribute('data-postback') || "",
-			bcolor:            scriptTag.getAttribute('data-buttonColor') || "",
-			btext:             scriptTag.getAttribute('data-buttonText') || "Download",
-			skipText:          scriptTag.getAttribute('data-skipText') || "Skip",
-			showSkipTimeAfter: scriptTag.getAttribute('data-skipTimeAfter') || "1",
-			countdown:         scriptTag.getAttribute('data-contdown') || "5",
-		}
-	};
 
 	function getVideoApp (apps) {
 		for (var i = 0; i < apps.length; i++) {
@@ -121,52 +104,11 @@ var appnextAPP = (function(){
 
 
 
-	function render (apps) {
-		app = getVideoApp(apps);
-		// console.log(Object.prototype.toString.call(apps));
-		var iframe = createIframe();
-		iframe.onload = function() {
-			var i           = this.contentWindow.document,
-					iframe          = this,
-					title           = qs('.title', i),
-					description     = qs('.description', i),
-					video           = qs('#video-player', i),
-					sprite          = qs('.sprite-animation__video', i),
-					image           = qs('.small-image > img', i),
-					skipBlock       = qs('.skip-block', i),
-					skipLink        = qs('.skip-link', i),
-					downloadNumbers = qs('.rating-download-numbers', i),
-					stars           = qs('.stars', i),
-					appDOM          = qs('.app', i);
-
-			if (iframe) {
-				iframe.style.display = "block";
-			};
-
-			if (title) {
-				title.innerHTML = app.title;	
-			};
-			
-			if (description) {
-				description.innerHTML = app.desc;	
-			};
-			
-			if (stars) {
-				var starsHover        = qs('.stars__hover', i),
-						starsHoverImage   = qs('.stars__hover img', i),
-						defaultStarsImage = qs('.stars__default img', i),
-						starsRating       = Math.round((Math.random() * (5 - 3.5) + 3.5)*2)/2;
-	
-					starRating(starsHover, starsHoverImage, defaultStarsImage, starsRating);
-			};
-
-
-			if (downloadNumbers) {
-				downloadNumbers.innerHTML = randomNumber(10000, 2000000).toLocaleString();
-			};
-
+	function render () {
+		document.body.onload = function() {
+			var sprite          = qs('.sprite-animation__video');			
 			if (sprite) {
-				var spriteContainer     = qs('#sprite-animation', i),
+				var spriteContainer     = qs('#sprite-animation'),
 						frameWidth          = 640,
 						frameHeight         = 360,
 						naturalSpriteHeight = 36000,
@@ -209,12 +151,12 @@ var appnextAPP = (function(){
 						};
 
 					var seqImages = function (images, index, callback) {
-						console.log(images);
 						var index = index || 0;
 						var callback = callback || function() {};
 						var img = document.createElement('img');
 						img.src = images[index];
 						sprite.appendChild(img);
+						console.log(img);
 						img.onload = function() {
 							if (index == 0) { callback() };
 							if (images.length-1 == index) { return };
@@ -233,6 +175,7 @@ var appnextAPP = (function(){
 							loadedImages[i].src = images[i];
 							loadedImages[i].style.display = "none";
 							sprite.appendChild(loadedImages[i]);
+							console.log(loadedImages[i]);
 							loadedImages[i].onload = function () {
 								count = count+1;
 								if (count >= images.length) {
@@ -253,97 +196,14 @@ var appnextAPP = (function(){
 					starRating(starsHover, starsHoverImage, defaultStarsImage, starsRating);
 				});
 			};
-
-			if (video) {
-				video.setAttribute('src', app.urlVideo);
-				// remove on production
-				// video.pause();
-				// uncomment on production 
-				// video.play();
-				vdoFakeClick(function() {
-					video.load();
-					video.play();
-				})
-			};
-
-			if (image) {
-				image.src = app.urlImg;
-				image.setAttribute('alt', app.title);				
-			};
-
-			appDOM.addEventListener('click', function() {
-				// uncomment on production
-				// window.location = app.urlApp;
-			});
-
-			skipLink.addEventListener('click', function() {
-				iframe.parentNode.removeChild(iframe);
-				Viewport.remove();
-			});
-
-
-			setTimeout(function() {
-				skipBlock.style.display = "block";
-				runCoundown(i);
-			}, seconds(q.showSkipTimeAfter))
 		};
 	};
-
-
-	function runCoundown(iframe) {
-		var timer       = qs('.countdown', iframe);
-		var seconds     = q.countdown;
-		timer.innerHTML = seconds;
-		var countdowner = setInterval(function() {
-			seconds--;
-			timer.innerHTML = seconds;
-			if (seconds == 0) {
-				// uncomment on production
-				// window.location = app.urlApp;
-				clearInterval(countdowner)
-			};
-		}, 1000)
-
-	};
-
-	function seconds (time) {
-		return time*1000;
-	}
-
-	function createIframe () {
-		var iframe = document.createElement('iframe');
-		
-		iframe.src = 'iframe.html';
-		iframe.id  = "videoIframe";
-		iframe.setAttributes({
-			styles: {
-				position:    'fixed',
-				top:         "0",
-				right:       "0",
-				bottom:      "0",
-				left:        "0",
-				borderStyle: 'none',
-				width:       '100%',
-				height:      '100%',
-				display:     'none',
-			}
-		});
-		document.body.appendChild(iframe);
-		return iframe;
-	}
-
-	function init() {
-		if (!q.id) {
-			return
-		};
-		loadJSONP("https://admin.appnext.com/offerWallApi.aspx?&vs=1&id="+q.id+"&cnt="+q.cnt+"&cat="+q.cat, success_jsonp);
-	}
-
+	
 	return {
-		init: init
+		render: render
 	}
 
 }());
 ready(function() {
-	appnextAPP.init();
+	appnextAPP.render();
 });
