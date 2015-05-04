@@ -192,7 +192,7 @@ var appnextAPP = (function(){
 						};
 						frameStep = frameStep + newSizes.height;						
 						sprite.style.top = '-'+frameStep+'px';
-					}, 60);
+					}, 1000);
 			};
 
 			if (video) {
