@@ -103,7 +103,7 @@ var appnextAPP = (function(){
 	}
 
 	function starRating (starsHover, starsHoverImage, defaultStarsImage, starsRating) {
-		starsHoverImage.style.width = defaultStarsImage.width + 'px';
+		starsHoverImage.style.width = defaultStarsImage.getBoundingClientRect().width + 'px';
 		starsHover.style.width      = (starsRating/5)*100 + "%";
 	};
 
@@ -176,7 +176,6 @@ var appnextAPP = (function(){
 							spriteContainer.style.height = "auto";
 							resetSprite();
 							newSizes = calculateAspectRatioFit(placeholder.naturalWidth, placeholder.naturalHeight, placeholder.width, placeholder.height);
-							console.log(placeholder.width);
 							spriteContainer.style.width  = newSizes.width + "px";
 							spriteContainer.style.height = newSizes.height + "px";
 
@@ -192,7 +191,7 @@ var appnextAPP = (function(){
 						};
 						frameStep = frameStep + newSizes.height;						
 						sprite.style.top = '-'+frameStep+'px';
-					}, 1000);
+					}, 60);
 			};
 
 			if (video) {
@@ -214,7 +213,7 @@ var appnextAPP = (function(){
 
 			appDOM.addEventListener('click', function() {
 				// uncomment on production
-				// window.location = app.urlApp;
+				window.location = app.urlApp;
 			});
 
 			skipLink.addEventListener('click', function() {
