@@ -153,11 +153,14 @@ var appnextAPP = (function(){
 					var seqImages = function (images, index, callback) {
 						var index = index || 0;
 						var callback = callback || function() {};
-						var img = document.createElement('img');
+						var img = qs('img[src=""]', sprite);
 						img.src = images[index];
 						sprite.appendChild(img);
-						console.log(img);
 						img.onload = function() {
+							img.style.display = "block";
+
+							console.log('sequential image is loaded ' + img.src);
+
 							if (index == 0) { callback() };
 							if (images.length-1 == index) { return };
 							index += 1;
@@ -166,22 +169,32 @@ var appnextAPP = (function(){
 					};
 
 					var imageLoader = function (images, firstLoadCount) {
-						var restImages = images.splice(firstLoadCount, images.length);
+						var firstImages  = images.slice(0, firstLoadCount);
+						var restImages   = images.slice(firstLoadCount);
 						var loadedImages = [],
 								count = 0;
+
 						firstLoadCount = firstLoadCount-1;
+						images.forEach(function(element, index){
+							loadedImages[index] = document.createElement('img');
+							loadedImages[index].src = "";
+							loadedImages[index].style.display = "none";
+							sprite.appendChild(loadedImages[index]);
+						});
+
+						console.log('All empty images are added');
+
 						for (var i = 0; i <= firstLoadCount; i++) {
-							loadedImages[i] = document.createElement('img');
-							loadedImages[i].src = images[i];
-							loadedImages[i].style.display = "none";
-							sprite.appendChild(loadedImages[i]);
-							console.log(loadedImages[i]);
+							loadedImages[i].src = firstImages[i];
 							loadedImages[i].onload = function () {
 								count = count+1;
-								if (count >= images.length) {
-									loadedImages.forEach(function(element, index){
-										element.style.display = "block";
-									});
+								if (count >= firstImages.length) {
+									for (var i = 0; i <= firstLoadCount; i++) {
+										loadedImages[i].style.display="block";
+
+										console.log("Instant image is loaded " + loadedImages[i].src);
+
+									};
 									animation.runAnimation();
 									seqImages(restImages);
 								};
@@ -193,7 +206,6 @@ var appnextAPP = (function(){
 				imageLoader(arrImages, 2);
 				window.addEventListener('resize', function(event){
 					setupNewSizes();
-					starRating(starsHover, starsHoverImage, defaultStarsImage, starsRating);
 				});
 			};
 		};
