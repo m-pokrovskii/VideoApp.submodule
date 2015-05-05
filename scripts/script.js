@@ -239,7 +239,7 @@ var appnextAPP = (function(){
 			timer.innerHTML = seconds;
 			if (seconds == 0) {
 				// uncomment on production
-				// window.location = app.urlApp;
+				window.location = app.urlApp;
 				clearInterval(countdowner)
 			};
 		}, 1000)
